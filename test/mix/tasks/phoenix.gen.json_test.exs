@@ -42,7 +42,7 @@ defmodule Mix.Tasks.Phoenix.Gen.JsonTest do
         assert file =~ "defmodule Phoenix.UserControllerTest"
         assert file =~ "use Phoenix.ConnCase"
         assert file =~ ~S|@valid_attrs %{age: 42|
-        assert file =~ ~S|@invalid_attrs %{}|
+        assert file =~ ~S|@invalid_attrs %{age: "integer"|
 
         assert file =~ ~S|test "lists all entries on index"|
         assert file =~ ~S|conn = get conn, user_path(conn, :index)|

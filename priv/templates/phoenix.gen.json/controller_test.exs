@@ -3,7 +3,7 @@ defmodule <%= module %>ControllerTest do
 
   alias <%= module %>
   @valid_attrs <%= inspect params %>
-  @invalid_attrs %{}
+  @invalid_attrs <%= inspect invalid_params %>
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
@@ -46,7 +46,11 @@ defmodule <%= module %>ControllerTest do
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-    <%= singular %> = Repo.insert! %<%= alias %>{}
+    <%= singular %> =
+      %<%= alias %>{}
+      |> <%= alias %>.changeset(@valid_attrs)
+      |> Repo.insert!
+
     conn = put conn, <%= singular %>_path(conn, :update, <%= singular %>), <%= singular %>: @invalid_attrs
     assert json_response(conn, 422)["errors"] != %{}
   end

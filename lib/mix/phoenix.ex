@@ -123,6 +123,18 @@ defmodule Mix.Phoenix do
   end
 
   @doc """
+  Generates some invalid sample params based on the parsed attributes.
+  """
+  def invalid_params(attrs) do
+    attrs
+    |> Enum.reject(fn
+        {_, {:references, _}} -> true
+        {_, _} -> false
+       end)
+    |> Enum.into(%{}, fn {k, t} -> {k, type_to_invalid(t)} end)
+  end
+
+  @doc """
   Checks the availability of a given module name.
   """
   def check_module_name_availability!(name) do
@@ -196,6 +208,23 @@ defmodule Mix.Phoenix do
         :time       -> %{hour: 14, min: 0, sec: 0}
         :datetime   -> %{year: 2010, month: 4, day: 17, hour: 14, min: 0, sec: 0}
         :uuid       -> "7488a646-e31f-11e4-aace-600308960662"
+        _           -> "some content"
+    end
+  end
+
+  defp type_to_invalid(t) do
+    case t do
+        {:array, _} -> "array"
+        :integer    -> "integer"
+        :float      -> false
+        :decimal    -> []
+        :boolean    -> -1
+        :map        -> "map"
+        :text       -> -1
+        :date       -> [year: 2010, month: 4, day: 17]
+        :time       -> [hour: 14, min: 0, sec: 0]
+        :datetime   -> [year: 2010, month: 4, day: 17, hour: 14, min: 0, sec: 0]
+        :uuid       -> %{}
         _           -> "some content"
     end
   end
